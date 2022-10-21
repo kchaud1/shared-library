@@ -19,8 +19,10 @@ def setEnvVarsFromGitProperties() {
 
     // git basic details, required for pipeline
     env.gitUrl = scm.getUserRemoteConfigs()[0].getUrl()-"https://"
-    env.gitProjectName = gitUrl.split("scm/")[1].split("/")[0].toLowerCase()
+    //env.gitProjectName = gitUrl.split("scm/")[1].split("/")[0].toLowerCase()
+    
     env.gitRepoName = gitUrl.tokenize('/').last().split("\\.")[0]
+	env.gitProjectName = "hdfc-${gitRepoName}"
     env.gitBranchName = env.BRANCH_NAME.split("/").last()
     if (isUnix()){
         env.gitCommitHash = sh (script: "git log -n 1 --pretty=format:'%H'", returnStdout: true)
