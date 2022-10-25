@@ -235,7 +235,7 @@ def findAndReadConfig(Map externalConfig = [:]) {
 
     pipelineLogger.info("Checking for branch specific .env files")
 
-    def foundFoldersArray=[]
+    /*def foundFoldersArray=[]
     if (fileExists('CICD')){
         foundFoldersArray = sh(script: 'ls -1 CICD/', returnStdout: true).split()
         pipelineLogger.debug("foundFoldersArray=${foundFoldersArray}")
@@ -267,7 +267,7 @@ def findAndReadConfig(Map externalConfig = [:]) {
             pipelineLogger.info("Found .env at 'CICD/${longestMatch}/.env'")
             additionalConfig = getConfigMap("CICD/${longestMatch}/.env")
         }        
-    }
+    }*/
     //Additional config (i.e. branch specific config) will overwrite any values set in general config
     config = config + additionalConfig + externalConfig
     pipelineLogger.debug("Config=${config}")
