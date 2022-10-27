@@ -92,7 +92,7 @@ def getRegistryProperties(Map config){
 }
 
 def getDockerPushUrl(Map config) {
-    String dockerPushRegistryLocation= (config["dockerPushRegistryLocation"]==null) ? "ampf" : config["dockerPushRegistryLocation"]  
+    String dockerPushRegistryLocation= (config["dockerPushRegistryLocation"]==null) ? "bank" : config["dockerPushRegistryLocation"]  
     //utilities.checkConfigVarExistsNotEmpty(config,"dockerPushRegistryLocation")
     String dockerPushUrl=""
     switch (dockerPushRegistryLocation){
