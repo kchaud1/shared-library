@@ -27,11 +27,11 @@ def build(Map config, List serviceNames=[]) {
             def registries = [env.dockerDevRegistryUrl, env.dockerReleaseRegistryUrl]
             def imageName=utilities.generateDockerImageName(serviceName, config)
             def imageNameWithTag="${imageName}:${env.tag}"
-          	def default_build_args="--build-arg ARTIFACTORY_USERNAME=${env.JENKINS_DAP_CREDS_RO} --build-arg ARTIFACTORY_PASSWORD=${CONJUR_SECRET}"
+          	def default_build_args="--build-arg ARTIFACTORY_USERNAME=karan9397 --build-arg ARTIFACTORY_PASSWORD=Cloud@2022"
           	def dockerBuildArgsString=(config['dockerBuildArgs'] == null) ? "${default_build_args}" : config['dockerBuildArgs']+" ${default_build_args}"
 
             // login to docker registries
-            for (registry in registries) { sh """ docker login "${registry}" -u $JENKINS_DAP_CREDS_RO -p $CONJUR_SECRET """ }
+            for (registry in registries) { sh """ docker login "${registry}" -u karan9397 -p Cloud@2022 """ }
 
             if (fileExists("${dockerfile}")){
                 if (fileExists(dockerIgnoreFile)){
