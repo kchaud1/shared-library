@@ -70,7 +70,7 @@ def validateOnPrem(Map config, List serviceNames) {
 def getRegistryProperties(Map config){
     String pushRegistryUrl=""
     String credsString=""
-    String dockerPushRegistryLocation=(config["dockerPushRegistryLocation"]==null) ? "ampf" : config["dockerPushRegistryLocation"]  
+    String dockerPushRegistryLocation=(config["dockerPushRegistryLocation"]==null) ? "bank" : config["dockerPushRegistryLocation"]  
     switch (dockerPushRegistryLocation){
         case "aws":
             def awsAccountNumber=config["awsAccountNumber"]
