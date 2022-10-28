@@ -31,7 +31,9 @@ def build(Map config, List serviceNames=[]) {
           	def dockerBuildArgsString=(config['dockerBuildArgs'] == null) ? "${default_build_args}" : config['dockerBuildArgs']+" ${default_build_args}"
 
             // login to docker registries
-            for (registry in registries) { sh """ docker login "${registry}" -u karan9397 -p Cloud@2022 """ }
+            // this will be used later when need to login to quay or jfrog
+            //for (registry in registries) { sh """ docker login "${registry}" -u karan9397 -p Cloud@2022 """ }
+            for (registry in registries) { sh """ docker login -u karan9397 -p Cloud@2022 """ }
 
             if (fileExists("${dockerfile}")){
                 if (fileExists(dockerIgnoreFile)){
