@@ -270,7 +270,7 @@ def findAndReadConfig(Map externalConfig = [:]) {
     }*/
     //Additional config (i.e. branch specific config) will overwrite any values set in general config
     config = config + additionalConfig + externalConfig
-    pipelineLogger.debug("Config=${config}")
+    pipelineLogger.debug("273------------Config=${config}")
 
     return config
 }
@@ -340,7 +340,7 @@ def call(boolean customParam = false, Map externalConfig = [:]) {
      * Print environment variables
      */
     String fullEnvVars = sh(script: "printenv | sort", returnStdout: true)
-  	pipelineLogger.debug("Full list of environment variables set: \n${fullEnvVars}")    
+  	pipelineLogger.debug("343---------Full list of environment variables set: \n${fullEnvVars}")    
   
     return config
 }
