@@ -70,6 +70,7 @@ def build(Map config, List serviceNames=[]) {
                 )
 
                 dockerImages.add("${imageNameWithTag}")
+                sh """docker image ls""" 
             }  else {
                 pipelineLogger.fatal("[[ ${serviceName} ]] : File '${dockerfile}' does not exists. Skipping build.")
             }
