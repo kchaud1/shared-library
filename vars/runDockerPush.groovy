@@ -228,7 +228,7 @@ def dockerPushEcr(Map config, List serviceNames,String role) {
     
     //['brc/dpe-bloomreachexperience/develop/cms':['akjllsdfjc9i3j2mx','latest']]
     //def filteredImageNameToTagListMap = validateEcr(config, imageNameToTagList)
-    List serviceNamesToPush=generateImagesToPush(config, serviceNames)
+    List serviceNamesToPush=validateEcr(config, serviceNames)
     //push(filteredImageNameToTagListMap, pushRegistryUrl, credSetName)    
     push(config, serviceNamesToPush,role)
 }
@@ -236,6 +236,7 @@ def getDockerPushUrlEcr(Map config) {
     def awsAccountNumber=config["awsAccountNumber"]
     def awsRegion=config["awsRegion"]
     def pushRegistryUrl = "${awsAccountNumber}.dkr.ecr.${awsRegion}.amazonaws.com"
+    pipelineLogger.debug("Registry ${pushRegistryUrl}")
     return pushRegistryUrl
 }
 
@@ -265,4 +266,39 @@ def ecrLogin(config){
       }
 }
 
+def validateEcr(Map config, List serviceNames, String role=null) {
+    env.DockerImageInvocationRegistry="dockerdev.ampf.com"
+    //env.DockerImageInvocation="afi/devops/invocation-no-entrypoint:latest"
+    //env.DockerImageInvocation="drp/devops/invocation-no-entrypoint:latest"
+    //env.DockerImageInvocationRegistryCreds=env.JENKINS_CREDENTIALS_RO
+    //def fullInvocationImagePath = "${env.DockerImageInvocationRegistry}/${env.DockerImageInvocation}"
+    def filteredImageNameToTagListMap=[:]
+    List imagesToPush=[]
+    pipelineLogger.debug("Attempting to validate properties around ECR docker registry.")
+    //docker.withRegistry("https://${env.DockerImageInvocationRegistry}", DockerImageInvocationRegistryCreds) {
+        def awsRegion=config["awsRegion"]
+        def awsUser=config["awsUser"]
+        def awsAccountNumber=config["awsAccountNumber"]
+        //docker.image(fullInvocationImagePath).inside("-e AWS_DEFAULT_REGION=${awsRegion}") {
+        //    script {
+                if(role != null){
+                   def creds = utilAwsCmd.getRoleCredentials(awsAccountNumber,awsUser,role)
+                   withEnv([
+                        "AWS_ACCESS_KEY_ID=${creds.AccessKeyId}",
+                        "AWS_SECRET_ACCESS_KEY=${creds.SecretAccessKey}",
+                        "AWS_SESSION_TOKEN=${creds.SessionToken}"
+                   ]) {
+                      imagesToPush = generateImagesToPush(config,serviceNames)
+                   } 
+                }else{
+                     withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: awsUser]]) {
+                        imagesToPush = generateImagesToPush(config,serviceNames)
+                     }
+            //    }
+               
+            //}
+        }
+    }
+    return imagesToPush
+}
 
