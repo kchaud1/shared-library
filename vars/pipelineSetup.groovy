@@ -1,8 +1,4 @@
-   /**
-    * Parse any custom parameters for jenkins build out of the defined properties.
-    * NOTE: These will be available on the NEXT build and will not be used this build.
-    * Return a specially formatted List of parameters that Jenkins can consume
-    *
+   /*
     * @param config - map of properties read in from .env
     * @return paramList - list of parameters defined in .env
     */
@@ -31,22 +27,7 @@ def getPipelineParameters(Map config, Map additionalParams=[:]) {
             "description" : "The branch name that the upstream docker image comes from"
         ]
     ]
-
-    if ( env.pipelineType == "deploy" ) {
-        defaultParametersMap.put(
-            "INVOCATION_COMMAND", [
-                "defaultValue" : "install",
-                "description" : "The command passed to invocation image"
-            ]
-        )
-        /*defaultParametersMap.put(
-            "Last Successfully Deployed Tag", [
-                "defaultValue" : "", 
-                "description" : "The command passed to invocation image"
-            ]
-        )
-        */
-
+    
     }
 
     pipelineLogger.debug("Creating Parameters for build job.  Note if parameters have been modified (added/removed/default value changed), they will be available in the next build.")
@@ -110,11 +91,6 @@ def getPipelineParameters(Map config, Map additionalParams=[:]) {
         pipelineLogger.debug("Adding parameter: name:'${paramName}', defaultValue:'${paramDefaultValue}', description:'${paramDescription}'")
 
     }
-      /*  "UPSTREAM_IMAGE_TAG" : [
-            "defaultValue" : "latest",
-            "description" : "The docker image tag (version) for the upstream image"
-        ],
-    */
 
     assert paramList.size() > 0 : "FATAL: No pipeline parameters have been defined, including defaults.  This will cause pipeline to enter failed state.  Pipeline will terminate now."
     return paramList
@@ -122,8 +98,6 @@ def getPipelineParameters(Map config, Map additionalParams=[:]) {
    
  /**
     * Adding a function to fetch the production branch name from folder properties defined in jenkins configuration
-    * This variable can be used globally in all scripts. Can only be defined in jenkins config of the repository as the plugin property.
-    * Name of the plugin is folder properties.
     */
 def setFolderProperties(Map config) 
 {
@@ -181,7 +155,7 @@ def setPipelineLogLevel(Map config){
     * @param config - map of properties read in from .env
     */
 def calculateAndSetPipelineTypeEnvVar(Map config) {
-    def final PIPELINE_TYPES=["workflow", "compile", "deploy", "custom"]
+    def final PIPELINE_TYPES=[ "compile", "deploy"]
     def final DEPLOY_TYPE_PIPELINE_REGEX = ~/.*((\/(deploy|config)-)|(-(deploy|config)\/)).*/
     // config-*
     // deploy-*
@@ -235,39 +209,7 @@ def findAndReadConfig(Map externalConfig = [:]) {
 
     pipelineLogger.info("Checking for branch specific .env files")
 
-    /*def foundFoldersArray=[]
-    if (fileExists('CICD')){
-        foundFoldersArray = sh(script: 'ls -1 CICD/', returnStdout: true).split()
-        pipelineLogger.debug("foundFoldersArray=${foundFoldersArray}")
-    }
-    if ( foundFoldersArray.contains(env.gitBranchName)) {
-        if ( fileExists("CICD/${env.gitBranchName}/.env")){
-            pipelineLogger.info("Found .env at 'CICD/${env.gitBranchName}/.env'")
-            additionalConfig=getConfigMap("CICD/${env.gitBranchName}/.env")
-        }
-        else {
-            pipelineLogger.warn("Found folder 'CICD/${env.gitBranchName}/' but did not find .env file inside")
-        }
-    }
-    else if ( foundFoldersArray.size() != 0 ) {
-        def longestMatch=""
-        
-        for ( folderName in foundFoldersArray ){
-            if ( folderName.startsWith("_") ){
-                //remove first char (_) of folderName
-                //folderName=folderName.drop(1)
-                if ( env.gitBranchName.startsWith(folderName.drop(1))){
-                    if (folderName.length() > longestMatch.length() && fileExists("CICD/${folderName}/.env")){
-                        longestMatch=folderName
-                    }
-                }
-            }
-        }
-        if ( longestMatch != "" ){
-            pipelineLogger.info("Found .env at 'CICD/${longestMatch}/.env'")
-            additionalConfig = getConfigMap("CICD/${longestMatch}/.env")
-        }        
-    }*/
+   
     //Additional config (i.e. branch specific config) will overwrite any values set in general config
     config = config + additionalConfig + externalConfig
     pipelineLogger.debug("273------------Config=${config}")
@@ -275,35 +217,8 @@ def findAndReadConfig(Map externalConfig = [:]) {
     return config
 }
 
-/**
-    * Read Custom Config 
-    *
-    * @param path - Directory path for system specific config file    
-    * @return config - map of properties read in from config file
-    *    
-    */
-def readCustomConfig(String path, String fileExtension) {     
-     def config = [:]    
-     
-     String actualPath = path +  "/${env.gitBranchName}/" + fileExtension;
-     if (fileExists(actualPath)) {
-          pipelineLogger.info("Found system specific config at:" + actualPath)
-          config = getConfigMap(actualPath)
-     } else {
-          pipelineLogger.info("Didn't found system specific config at:" + actualPath)
-     }  
-
-     return config;  
-}
 
 
-   /**
-    * Run setup activities after checking out git repo so properties file is available
-    *
-    * @param filePath - location of properties file, relative to root of repo hfn jb.  Generally set to '.env'
-    * @return config - map of properties read in from .env
-    *    
-    */
 def call(boolean customParam = false, Map externalConfig = [:]) {
     pipelineLogger.info("Running Setup")
     utilGit.setEnvVarsFromGitProperties()
