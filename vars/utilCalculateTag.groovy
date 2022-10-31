@@ -92,7 +92,7 @@ def calculateSemVerTag(config) {
 def calculateBuildNumberTag(Map config) {
     def tag = getRelease(config)    
 
-    imageTag = "${tag}-b${env.BUILD_NUMBER}"
+	imageTag = "${tag}-b${env.BUILD_NUMBER}-${env.BRANCH_NAME}"
     return imageTag    
 }
 
