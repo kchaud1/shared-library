@@ -170,4 +170,98 @@ def runStage(Map config, serviceNames=[]) {
         }
     }
 }
+def ecrPushImages(config, serviceNames, pushRegistryUrl){
+    def dockerImages=[]
+    def prodBranch = (config['releaseBranch'] == null) ? "${env.PROD_BRANCH_NAME}" : config['releaseBranch']
+    for (serviceName in serviceNames) {
+        String imageName=utilities.generateDockerImageName(serviceName, config)
+        String imageNameWithTag="${imageName}:${env.tag}"
+                    
+        pipelineLogger.debug("Pushing image '${pushRegistryUrl}/${imageNameWithTag}'.")
+        docker.image(imageNameWithTag).push()
+
+        pipelineLogger.debug("Pushing image '${pushRegistryUrl}/${imageName}:latest'.")
+        docker.image(imageNameWithTag).push("latest")
+
+        //updateGitTagForPromotion(config)
+        dockerImages.add("${imageNameWithTag}")
+    }
+    env.DOCKER_IMAGES=dockerImages.join(",")
+}
+def generateImagesToPush(Map config, List serviceNames){
+        List imagesToPush=[]
+        for ( serviceName in serviceNames) {
+                            
+           String imageName=utilities.generateDockerImageName(serviceName, config)
+           def awsUser= config["awsUser"] //added user to display in error
+           //Check if repository has been created in ECR yet - if not, then create it now
+          def checkRepositoryExists= sh script: "aws ecr describe-repositories --repository-names ${imageName} > /dev/null 2>&1 || aws ecr create-repository --repository-name ${imageName} > /dev/null 2>&1", returnStatus: true
+          assert checkRepositoryExists == 0 :"ERROR: Error response while checking/creating repository in ECR.  Repository name ='${imageName}', using credentials id '${awsUser}'\nLikely issues are: \n-Invalid repository name\n-Invalid credentials/incorrect permissions associated with credentials.  Requires full permissions for ECR in order to run."
+          def imageAlreadyExists = sh script: "aws ecr describe-images --repository-name ${imageName} --image-ids imageTag=${env.tag} > /dev/null 2>&1", returnStatus: true
+          pipelineLogger.debug("imageAlreadyExists set to ${imageAlreadyExists}")
+          if (imageAlreadyExists == 0) {
+                pipelineLogger.warn("Image ${imageName} with tag ${env.tag} already exists in ECR.  This tag will not be pushed again")
+          }
+          else {
+                pipelineLogger.debug("Image ${imageName}:${env.tag} was not found in ecr, so it can be pushed.")
+                imagesToPush.add(serviceName)
+          }
+        }
+        return imagesToPush
+}
+def dockerPushEcr(Map config, List serviceNames,String role) {
+    utilities.checkAwsVars(config)
+    /*def awsAccountNumber=config["awsAccountNumber"]
+    def awsRegion=config["awsRegion"]
+    def awsUser=config["awsUser"]
+
+    def pushRegistryUrl = getDockerPushUrlEcr(config)
+    def credSetName = "ecr:${awsRegion}:${awsUser}"
+    */
+    String pushRegistryUrl
+    String credSetName
+    (pushRegistryUrl, credSetName) = getRegistryProperties(config)
+    //def imageNameToTagList = generateImageNameToTagList(config, serviceNames)
+    
+    //['brc/dpe-bloomreachexperience/develop/cms':['akjllsdfjc9i3j2mx','latest']]
+    //def filteredImageNameToTagListMap = validateEcr(config, imageNameToTagList)
+    List serviceNamesToPush=validateEcr(config, serviceNames,role)
+    //push(filteredImageNameToTagListMap, pushRegistryUrl, credSetName)    
+    push(config, serviceNamesToPush,role)
+}
+def getDockerPushUrlEcr(Map config) {
+    def awsAccountNumber=config["awsAccountNumber"]
+    def awsRegion=config["awsRegion"]
+    def pushRegistryUrl = "${awsAccountNumber}.dkr.ecr.${awsRegion}.amazonaws.com"
+    return pushRegistryUrl
+}
+
+def ecrLogin(config){
+    def awsAccountNumber=config["awsAccountNumber"]
+    def awsRegion=config["awsRegion"]
+    def awsUser=config["awsUser"]
+    //sh " aws ecr get-login-password --region ${awsRegion} | docker login --username AWS --password-stdin ${awsAccountNumber}.dkr.ecr.${awsRegion}.amazonaws.com"
+    def creds = utilAwsCmd.getRoleCredentials(awsAccountNumber,awsUser,awsRole)
+    //sh(script:""" 
+                    aws ecr get-login-password --region ${awsRegion} | docker login --username AWS --password-stdin ${awsAccountNumber}.dkr.ecr.${awsRegion}.amazonaws.com
+                    """, returnStdout: true)
+    
+    try
+    {
+        withEnv([
+            "AWS_ACCESS_KEY_ID=${creds.AccessKeyId}",
+            "AWS_SECRET_ACCESS_KEY=${creds.SecretAccessKey}",
+            "AWS_SESSION_TOKEN=${creds.SessionToken}"
+        ])
+        {
+            sh(script:""" 
+                    aws ecr get-login-password --region ${awsRegion} | docker login --username AWS --password-stdin ${awsAccountNumber}.dkr.ecr.${awsRegion}.amazonaws.com
+                    """, returnStdout: true)
+        }
+    }
+    catch (Exception ex) {
+        pipelineLogger.fatal("AWS login failed")
+      }
+}
+
 
