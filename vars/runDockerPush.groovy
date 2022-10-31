@@ -76,6 +76,9 @@ def getRegistryProperties(Map config){
             def awsAccountNumber=config["awsAccountNumber"]
             def awsRegion=config["awsRegion"]
             def awsUser=config["awsUser"]
+                    pipelineLogger.debug("Account ${awsAccountNumber}")
+            pipelineLogger.debug("USER ${awsUser}")
+            pipelineLogger.debug("REGION ${awsRegion}")
 
             pushRegistryUrl = getDockerPushUrlEcr(config)
             credsString = "ecr:${awsRegion}:${awsUser}"
