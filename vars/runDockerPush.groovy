@@ -228,7 +228,9 @@ def dockerPushEcr(Map config, List serviceNames,String role) {
     
     //['brc/dpe-bloomreachexperience/develop/cms':['akjllsdfjc9i3j2mx','latest']]
     //def filteredImageNameToTagListMap = validateEcr(config, imageNameToTagList)
-    List serviceNamesToPush=validateEcr(config, serviceNames)
+    //List serviceNamesToPush=validateEcr(config, serviceNames)
+     withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: awsUser]]) {
+         List serviceNamesToPush = generateImagesToPush(config,serviceNames)}
     //push(filteredImageNameToTagListMap, pushRegistryUrl, credSetName)    
     push(config, serviceNamesToPush,role)
 }
