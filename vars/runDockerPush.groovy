@@ -225,7 +225,7 @@ def dockerPushEcr(Map config, List serviceNames,String role) {
     
     //['brc/dpe-bloomreachexperience/develop/cms':['akjllsdfjc9i3j2mx','latest']]
     //def filteredImageNameToTagListMap = validateEcr(config, imageNameToTagList)
-    List serviceNamesToPush=generateImagesToPush(Map config, List serviceNames)
+    List serviceNamesToPush=generateImagesToPush(config, serviceNames)
     //push(filteredImageNameToTagListMap, pushRegistryUrl, credSetName)    
     push(config, serviceNamesToPush,role)
 }
