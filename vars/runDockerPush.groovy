@@ -282,6 +282,8 @@ def validateEcr(Map config, List serviceNames, String role=null) {
         //docker.image(fullInvocationImagePath).inside("-e AWS_DEFAULT_REGION=${awsRegion}") {
         //    script {
                 if(role != null){
+                    pipelineLogger.debug("Registry is Validate ecr -------------------------")
+
                    def creds = utilAwsCmd.getRoleCredentials(awsAccountNumber,awsUser,role)
                    withEnv([
                         "AWS_ACCESS_KEY_ID=${creds.AccessKeyId}",
@@ -290,7 +292,7 @@ def validateEcr(Map config, List serviceNames, String role=null) {
                        
                        
                    ]) {
-                       pipelineLogger.debug("Registry is Validate ecr {$AWS_ACCESS_KEY_ID}")
+                       pipelineLogger.debug("Registry is Validate ecr -------------------00000000000")
 
                       imagesToPush = generateImagesToPush(config,serviceNames)
                    } 
