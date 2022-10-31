@@ -138,7 +138,8 @@ def checkCreateGitTag(String tag, String message="", Boolean force=false,Map git
   {
 
     // updated function to use git with authenticate method. 
-    runGitWithAuth(env.JENKINS_DAP_CREDS_RO, env.JENKINS_DAP_CREDS_RO, "fetch https://${env.gitUrl} --tags --force")
+    //runGitWithAuth(env.JENKINS_DAP_CREDS_RO, env.JENKINS_DAP_CREDS_RO, "fetch https://${env.gitUrl} --tags --force")
+    runGitWithAuth(kchaud1, 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, "fetch https://${env.gitUrl} --tags --force")
     returnVal = sh script:"git rev-parse '${tag}' > /dev/null", returnStatus:true
     if ( optional_tag == "false" )
     {
