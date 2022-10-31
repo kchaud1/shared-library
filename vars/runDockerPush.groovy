@@ -298,7 +298,5 @@ def validateEcr(Map config, List serviceNames, String role=null) {
                
             //}
         }
-    }
-    return imagesToPush
-}
-
+    
+    return imagesToPush}
