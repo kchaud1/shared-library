@@ -193,6 +193,7 @@ def ecrPushImages(config, serviceNames, pushRegistryUrl){
 }
 def generateImagesToPush(Map config, List serviceNames){
         List imagesToPush=[]
+          pipelineLogger.debug("Inside GENERATEIMAGESTO PUSH  NOW ------------------")
         for ( serviceName in serviceNames) {
                             
            String imageName=utilities.generateDockerImageName(serviceName, config)
@@ -228,9 +229,9 @@ def dockerPushEcr(Map config, List serviceNames,String role) {
     
     //['brc/dpe-bloomreachexperience/develop/cms':['akjllsdfjc9i3j2mx','latest']]
     //def filteredImageNameToTagListMap = validateEcr(config, imageNameToTagList)
-    //List serviceNamesToPush=validateEcr(config, serviceNames)
-     withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: awsUser]]) {
-         List serviceNamesToPush = generateImagesToPush(config,serviceNames)}
+    List serviceNamesToPush=validateEcr(config, serviceNames)
+     //withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: awsUser]]) {
+         //List serviceNamesToPush = generateImagesToPush(config,serviceNames)}
     //push(filteredImageNameToTagListMap, pushRegistryUrl, credSetName)    
     push(config, serviceNamesToPush,role)
 }
@@ -246,6 +247,7 @@ def ecrLogin(config){
     def awsAccountNumber=config["awsAccountNumber"]
     def awsRegion=config["awsRegion"]
     def awsUser=config["awsUser"]
+    pipelineLogger.debug("Inside ECR LOGIN NOW ------------------")
     //sh " aws ecr get-login-password --region ${awsRegion} | docker login --username AWS --password-stdin ${awsAccountNumber}.dkr.ecr.${awsRegion}.amazonaws.com"
     def creds = utilAwsCmd.getRoleCredentials(awsAccountNumber,awsUser,awsRole)
    
