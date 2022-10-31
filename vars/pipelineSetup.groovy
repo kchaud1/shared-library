@@ -312,12 +312,12 @@ def call(boolean customParam = false, Map externalConfig = [:]) {
   	setFolderProperties(config)
     //Setting up env based on LOB : future implementation
     //utilities.setLOBBaseEnv(config, globalVar)
-    def customPipelineScriptLocation = utilities.getCustomPipelineScriptLocation()
-    if ( customPipelineScriptLocation != "" ) {
-        pipelineLogger.info("Custom pipeline script found at ${customPipelineScriptLocation}")
-        config.put("pipelineType","custom")
-        config.put("customPipelineScriptLocation",customPipelineScriptLocation)
-    }
+   // def customPipelineScriptLocation = utilities.getCustomPipelineScriptLocation()
+    //if ( customPipelineScriptLocation != "" ) {
+      //  pipelineLogger.info("Custom pipeline script found at ${customPipelineScriptLocation}")
+        //config.put("pipelineType","custom")
+        //config.put("customPipelineScriptLocation",customPipelineScriptLocation)
+    //}
 
     assert ! config.isEmpty():"ERROR: No .env file(s) or custom Pipeline scripts detected"
 
