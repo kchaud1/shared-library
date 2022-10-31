@@ -27,7 +27,22 @@ def getPipelineParameters(Map config, Map additionalParams=[:]) {
             "description" : "The branch name that the upstream docker image comes from"
         ]
     ]
-    
+
+    if ( env.pipelineType == "deploy" ) {
+        defaultParametersMap.put(
+            "INVOCATION_COMMAND", [
+                "defaultValue" : "install",
+                "description" : "The command passed to invocation image"
+            ]
+        )
+        /*defaultParametersMap.put(
+            "Last Successfully Deployed Tag", [
+                "defaultValue" : "", 
+                "description" : "The command passed to invocation image"
+            ]
+        )
+        */
+
     }
 
     pipelineLogger.debug("Creating Parameters for build job.  Note if parameters have been modified (added/removed/default value changed), they will be available in the next build.")
@@ -91,6 +106,11 @@ def getPipelineParameters(Map config, Map additionalParams=[:]) {
         pipelineLogger.debug("Adding parameter: name:'${paramName}', defaultValue:'${paramDefaultValue}', description:'${paramDescription}'")
 
     }
+      /*  "UPSTREAM_IMAGE_TAG" : [
+            "defaultValue" : "latest",
+            "description" : "The docker image tag (version) for the upstream image"
+        ],
+    */
 
     assert paramList.size() > 0 : "FATAL: No pipeline parameters have been defined, including defaults.  This will cause pipeline to enter failed state.  Pipeline will terminate now."
     return paramList
