@@ -287,10 +287,11 @@ def validateEcr(Map config, List serviceNames, String role=null) {
                         "AWS_ACCESS_KEY_ID=${creds.AccessKeyId}",
                         "AWS_SECRET_ACCESS_KEY=${creds.SecretAccessKey}",
                         "AWS_SESSION_TOKEN=${creds.SessionToken}"
-                       pipelineLogger.debug("Registry is Validate ecr {$AWS_ACCESS_KEY_ID}")
-
+                       
                        
                    ]) {
+                       pipelineLogger.debug("Registry is Validate ecr {$AWS_ACCESS_KEY_ID}")
+
                       imagesToPush = generateImagesToPush(config,serviceNames)
                    } 
                 }else{
