@@ -242,9 +242,7 @@ def ecrLogin(config){
     def awsUser=config["awsUser"]
     //sh " aws ecr get-login-password --region ${awsRegion} | docker login --username AWS --password-stdin ${awsAccountNumber}.dkr.ecr.${awsRegion}.amazonaws.com"
     def creds = utilAwsCmd.getRoleCredentials(awsAccountNumber,awsUser,awsRole)
-    //sh(script:""" 
-                    aws ecr get-login-password --region ${awsRegion} | docker login --username AWS --password-stdin ${awsAccountNumber}.dkr.ecr.${awsRegion}.amazonaws.com
-                    """, returnStdout: true)
+   
     
     try
     {
