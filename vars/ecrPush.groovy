@@ -36,7 +36,7 @@ def dockerPushEcr(Map config, List serviceNames,String role) {
     String dockerPushRegistryLocation=(config["dockerPushRegistryLocation"]==null) ? "ampf" : config["dockerPushRegistryLocation"]  
 
    
-    def pushRegistryUrl = "${awsAccountNumber}.dkr.ecr.${awsRegion}.amazonaws.com"
+    pushRegistryUrl = "${awsAccountNumber}.dkr.ecr.${awsRegion}.amazonaws.com"
 
         sh(script:""" aws ecr get-login-password --region ${awsRegion} | docker login --username AWS --password-stdin ${awsAccountNumber}.dkr.ecr.${awsRegion}.amazonaws.com""", returnStdout: true)
         String imageName=utilities.generateDockerImageName(serviceName, config)
