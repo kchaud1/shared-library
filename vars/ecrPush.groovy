@@ -34,12 +34,18 @@ def dockerPushEcr(Map config, List serviceNames,String role) {
     def awsRegion=config["awsRegion"]
     def awsUser=config["awsUser"]
     String dockerPushRegistryLocation=(config["dockerPushRegistryLocation"]==null) ? "hdfc" : config["dockerPushRegistryLocation"]  
-
+   
    //def serviceName = config['serviceName']
     pushRegistryUrl = "${awsAccountNumber}.dkr.ecr.${awsRegion}.amazonaws.com"
         //sh(script: "aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 898815416447.dkr.ecr.ap-south-1.amazonaws.com")
         sh(script:""" aws ecr get-login-password --region ${awsRegion} | docker login --username AWS --password-stdin ${awsAccountNumber}.dkr.ecr.${awsRegion}.amazonaws.com""", returnStdout: true)
-        
+         docker.withRegistry("https://${pushRegistryUrl}") {
+                    pushImages(config, serviceNames, pushRegistryUrl)
+
+    }
+}
+    def pushImages(config, serviceNames, pushRegistryUrl){
+    def dockerImages=[]
     for (serviceName in serviceNames) {
         String imageName=utilities.generateDockerImageName(serviceName, config)
         String imageNameWithTag="${imageName}:${env.tag}"
@@ -47,11 +53,7 @@ def dockerPushEcr(Map config, List serviceNames,String role) {
         pipelineLogger.debug("Pushing image '${pushRegistryUrl}/${imageNameWithTag}'.")
         docker.image(imageNameWithTag).push()
         pipelineLogger.debug("Pushing image '${pushRegistryUrl}/${imageName}:latest'.")
-        docker.image(imageNameWithTag).push("latest")}
-    
-    
-
-    //push(filteredImageNameToTagListMap, pushRegistryUrl, credSetName)    
-    push(config, serviceNamesToPush,role)
-}
+        docker.image(imageNameWithTag).push("latest")
+    }
+    }
 
