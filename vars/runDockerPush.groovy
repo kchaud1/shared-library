@@ -65,7 +65,7 @@ def getDockerPushUrl(Map config) {
         case "aws":
             dockerPushUrl= getDockerPushUrlEcr(config)
             break
-        case "ampf":
+        case "hdfc":
             dockerPushUrl= getDockerPushUrlOnPrem(config)
             break
         default:
