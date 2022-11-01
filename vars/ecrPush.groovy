@@ -33,7 +33,7 @@ def dockerPushEcr(Map config, List serviceNames,String role) {
     def awsAccountNumber=config["awsAccountNumber"]
     def awsRegion=config["awsRegion"]
     def awsUser=config["awsUser"]
-    String dockerPushRegistryLocation=(config["dockerPushRegistryLocation"]==null) ? "ampf" : config["dockerPushRegistryLocation"]  
+    String dockerPushRegistryLocation=(config["dockerPushRegistryLocation"]==null) ? "hdfc" : config["dockerPushRegistryLocation"]  
 
    //def serviceName = config['serviceName']
     pushRegistryUrl = "${awsAccountNumber}.dkr.ecr.${awsRegion}.amazonaws.com"
