@@ -37,7 +37,7 @@ def dockerPushEcr(Map config, List serviceNames,String role) {
    
    //def serviceName = config['serviceName']
     //pushRegistryUrl = "${awsAccountNumber}.dkr.ecr.${awsRegion}.amazonaws.com"
-    pushRegistryUrl = getDockerPushUrlEcr(Map config)
+    pushRegistryUrl = getDockerPushUrlEcr(config)
         //sh(script: "aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 898815416447.dkr.ecr.ap-south-1.amazonaws.com")
         sh(script:""" aws ecr get-login-password --region ${awsRegion} | docker login --username AWS --password-stdin ${awsAccountNumber}.dkr.ecr.${awsRegion}.amazonaws.com""", returnStdout: true)
          docker.withRegistry("https://${pushRegistryUrl}") {
