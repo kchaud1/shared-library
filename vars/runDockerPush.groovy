@@ -36,7 +36,8 @@ def dockerPushEcr(Map config, List serviceNames,String role) {
     String dockerPushRegistryLocation=(config["dockerPushRegistryLocation"]==null) ? "hdfc" : config["dockerPushRegistryLocation"]  
    
    //def serviceName = config['serviceName']
-    pushRegistryUrl = "${awsAccountNumber}.dkr.ecr.${awsRegion}.amazonaws.com"
+    //pushRegistryUrl = "${awsAccountNumber}.dkr.ecr.${awsRegion}.amazonaws.com"
+    pushRegistryUrl = getDockerPushUrlEcr(Map config)
         //sh(script: "aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 898815416447.dkr.ecr.ap-south-1.amazonaws.com")
         sh(script:""" aws ecr get-login-password --region ${awsRegion} | docker login --username AWS --password-stdin ${awsAccountNumber}.dkr.ecr.${awsRegion}.amazonaws.com""", returnStdout: true)
          docker.withRegistry("https://${pushRegistryUrl}") {
@@ -56,4 +57,27 @@ def dockerPushEcr(Map config, List serviceNames,String role) {
         docker.image(imageNameWithTag).push("latest")
     }
     }
+def getDockerPushUrl(Map config) {
+    String dockerPushRegistryLocation= (config["dockerPushRegistryLocation"]==null) ? "ampf" : config["dockerPushRegistryLocation"]  
+    //utilities.checkConfigVarExistsNotEmpty(config,"dockerPushRegistryLocation")
+    String dockerPushUrl=""
+    switch (dockerPushRegistryLocation){
+        case "aws":
+            dockerPushUrl= getDockerPushUrlEcr(config)
+            break
+        case "ampf":
+            dockerPushUrl= getDockerPushUrlOnPrem(config)
+            break
+        default:
+            pipelineLogger.error("dockerPushRegistryLocation found in .env as '${dockerPushRegistryLocation}' which does not match any of the known registry types")
+            break
+    }    
+    return dockerPushUrl
+}
 
+def getDockerPushUrlEcr(Map config) {
+    def awsAccountNumber=config["awsAccountNumber"]
+    def awsRegion=config["awsRegion"]
+    def pushRegistryUrl = "${awsAccountNumber}.dkr.ecr.${awsRegion}.amazonaws.com"
+    return pushRegistryUrl
+}
