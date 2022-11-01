@@ -27,6 +27,20 @@ def trimMap(Map mapObj){
   return mapObj
 }
 
+def getServiceName(String serviceName, Map config = [:]){
+    def final CUSTOM_SERVICENAME_STRING = "_serviceName"
+    def imageServiceName=serviceName
+
+    def customServiceNameString="${serviceName}${CUSTOM_SERVICENAME_STRING}"
+    def customServiceName=config[customServiceNameString]
+
+    if (customServiceName != null && customServiceName != "") {
+        imageServiceName = customServiceName
+        pipelineLogger.debug("found '${serviceName}${CUSTOM_SERVICENAME_STRING}' in config - imageServiceName set to ${imageServiceName}")
+
+    }
+    return imageServiceName.toLowerCase()
+}
  
 def parseListFromString(String inputString) {
     def array = inputString.replaceAll("\"\\\\","").replaceAll(","," ").split()
