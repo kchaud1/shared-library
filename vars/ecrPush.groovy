@@ -27,7 +27,7 @@ def dockerPushEcr(Map config, List serviceNames,String role) {
     
     //['brc/dpe-bloomreachexperience/develop/cms':['akjllsdfjc9i3j2mx','latest']]
     //def filteredImageNameToTagListMap = validateEcr(config, imageNameToTagList)
-    List serviceNamesToPush=validateEcr(config, serviceNames,role)
+    //List serviceNamesToPush=validateEcr(config, serviceNames,role)----------------------------
     List imagesToPush=[]
   
     def awsAccountNumber=config["awsAccountNumber"]
