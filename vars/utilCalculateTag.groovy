@@ -88,22 +88,8 @@ def call(Map config) {
             break
         }
     }
-
     
-    
-
-
-    /*def overrideIncludeUpstreamTag = config[INCLUDE_UPSTREAM_TAG_STRING]
-    //pipelineLogger.debug("overrideIncludeUpstreamTag='${overrideIncludeUpstreamTag}'")
-    if ( overrideIncludeUpstreamTag != null ) {
-        if ( overrideIncludeUpstreamTag == "true" ) {
-            includeUpstreamTag = true
-        }
-        else if ( overrideIncludeUpstreamTag == "false" ) {
-            includeUpstreamTag = false
-        }
-    }*/
-
+   
     assert TAGGING_STRATEGIES.contains(taggingStrategy) :"ERROR: Did not find tagging strategy '${taggingStrategy}' in ${TAGGING_STRATEGIES}"
 
     def tag = ""
@@ -122,11 +108,7 @@ def call(Map config) {
         break
            
     }
-    //assert (tag != "" || taggingStrategy == "latestOnly") : "ERROR: tag has been calculated as ''"
-
-    //if (includeUpstreamTag == true) {
-      //  tag = "${params.UPSTREAM_IMAGE_TAG}-${tag}"
-    //}
+    
     env.tag = tag
     config.put("tag", tag)
     pipelineLogger("Tag calculated to be ${env.tag}")
