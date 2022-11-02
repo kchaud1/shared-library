@@ -23,10 +23,11 @@ def build(Map config, List serviceNames=[]) {
         def dockerIgnoreFile = "/docker-images/${serviceName}/.dockerignore"
         def dockerBuildRegistry = getDockerRegistry(config['releaseBranch'])
 
-        //withCredentials([conjurSecretCredential(credentialsId: env.JENKINS_DAP_CREDS_RO, variable: 'CONJUR_SECRET')]){
+        //withCredentials([***** THIS block will be used for registry login***************]){
             def registries = [env.dockerDevRegistryUrl, env.dockerReleaseRegistryUrl]
             def imageName=utilities.generateDockerImageName(serviceName, config)
             def imageNameWithTag="${imageName}:${env.tag}"
+            //***************Need to replace with  Jenkins Global Creds*****************
           	def default_build_args="--build-arg ARTIFACTORY_USERNAME=karan9397 --build-arg ARTIFACTORY_PASSWORD=Cloud@2022"
           	def dockerBuildArgsString=(config['dockerBuildArgs'] == null) ? "${default_build_args}" : config['dockerBuildArgs']+" ${default_build_args}"
 
