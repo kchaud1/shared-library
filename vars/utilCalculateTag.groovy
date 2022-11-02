@@ -33,7 +33,7 @@ def calculateSemVerTag(config) {
 	
     
         return imageTag
-      }
+      
     }
     catch (e)
     {
