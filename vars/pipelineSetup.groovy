@@ -25,13 +25,13 @@ def getPipelineParameters(Map config, Map additionalParams=[:]) {
                 "description" : "The command passed to invocation image"
             ]
         )
-        /*defaultParametersMap.put(
+        defaultParametersMap.put(
             "Last Successfully Deployed Tag", [
                 "defaultValue" : "", 
                 "description" : "The command passed to invocation image"
             ]
         )
-        */
+        
 
     }*/
 
