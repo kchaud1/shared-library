@@ -53,7 +53,7 @@ def dockerPushEcr(Map config, List serviceNames,String role) {
     }
     }
 def getDockerPushUrl(Map config) {
-    String dockerPushRegistryLocation= (config["dockerPushRegistryLocation"]==null) ? "ampf" : config["dockerPushRegistryLocation"]  
+    String dockerPushRegistryLocation= (config["dockerPushRegistryLocation"]==null) ? "hdfc" : config["dockerPushRegistryLocation"]  
     String dockerPushUrl=""
     switch (dockerPushRegistryLocation){
         case "aws":
