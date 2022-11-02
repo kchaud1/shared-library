@@ -77,7 +77,7 @@ def getDockerPushUrlEcr(Map config) {
 }
 
 def dockerPushOnPrem(Map config, List serviceNames){
-    pipelinelogger.debug("Code required for on prem deployment")
+    pipelineLogger.debug("Code required for on prem deployment")
 }
 def getDockerPushUrlOnPrem(Map config) {
     def pushRegistryUrl = (config['releaseBranch'] == env.gitBranchName) ? "${env.dockerReleaseRegistryUrl}":"${env.dockerDevRegistryUrl}"
