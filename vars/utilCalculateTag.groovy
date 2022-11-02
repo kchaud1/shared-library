@@ -37,13 +37,6 @@ def calculateSemVerTag(config) {
       
 }
 
-   /**
-    * Calculate the tag using build number strategy, i.e. '1.2.3-b20' 
-    *   Where release=1.2.3 in .env
-    *   And current build number is 20.
-    * @param config - map of properties read in from .env
-    * @return imageTag - string in the form '1.2.3-b20'   
-    */
 def calculateBuildNumberTag(Map config) {
     def tag = getRelease(config)    
 
