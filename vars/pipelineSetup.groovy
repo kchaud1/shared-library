@@ -7,16 +7,6 @@ def getPipelineParameters(Map config, Map additionalParams=[:]) {
     def final PARAMETER_DEFAULT_VALUE_STRING="parameterDefaultValue_"
     def final PARAMETER_DESCRIPTION_STRING="parameterDescription_"
 
-    //Note: 
-    //Jenkins issue - 
-    //Can't have parameterized build with no parameters or it will crash.  
-    //There must be at least one parameter defined, but there is no requirement that it is used.
-    
-    //Note:
-    //All parameters are added as build args to docker builds.  See stageDockerBuild.generateBuildArgsMap()
-
-
-
     def defaultParametersMap = [ 
         "UPSTREAM_IMAGE_TAG" : [
             "defaultValue" : "latest",
@@ -28,7 +18,7 @@ def getPipelineParameters(Map config, Map additionalParams=[:]) {
         ]
     ]
 
-    if ( env.pipelineType == "deploy" ) {
+    /*if ( env.pipelineType == "deploy" ) {
         defaultParametersMap.put(
             "INVOCATION_COMMAND", [
                 "defaultValue" : "install",
@@ -43,7 +33,7 @@ def getPipelineParameters(Map config, Map additionalParams=[:]) {
         )
         */
 
-    }
+    }*/
 
     pipelineLogger.debug("Creating Parameters for build job.  Note if parameters have been modified (added/removed/default value changed), they will be available in the next build.")
     def paramNameList = []
