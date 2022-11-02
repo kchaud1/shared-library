@@ -19,7 +19,8 @@ def setEnvVarsFromGitProperties() {
 
     // git basic details, required for pipeline
     env.gitUrl = scm.getUserRemoteConfigs()[0].getUrl()-"https://"
-    //env.gitProjectName = gitUrl.split("scm/")[1].split("/")[0].toLowerCase()
+     //NEED TO SET THIS AS PER BANK
+    //*********env.gitProjectName = gitUrl.split("github.com/")[1].split("/")[0].toLowerCase()************
     
     env.gitRepoName = gitUrl.tokenize('/').last().split("\\.")[0]
 	env.gitProjectName = "hdfc"
@@ -81,12 +82,6 @@ def setAdvancedGitEnvProperties(){
             pipelineLogger.fatal("Caught Exception, printing Stack Trace: ${e}")
     }
 }
-
-   /**
-    * Wrapper function to get the value of 'gitTagging' variable from .env 
-    * @param config - map of properties read in from .env
-    * @return gitTagging - string containing the specified value   
-    */
 def getOptionalTagging(config) {
     def final TAGGING="gitTagging"
 	def gitTagging = ""
