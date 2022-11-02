@@ -162,7 +162,7 @@ def checkCreateGitTag(String tag, String message="", Boolean force=false,Map git
             }
             returnVal = sh script: "git tag ${forceFlag} ${annotatedTagString} ${tag} ", returnStatus:true
             assert returnVal == 0 : "Failed to create tag"
-            runGitWithAuth(env.JENKINS_DAP_CREDS_RO, env.JENKINS_DAP_CREDS_RO, "push https://${env.gitUrl} ${tag}")
+            runGitWithAuth(kchaud1, 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, "push https://${env.gitUrl} ${tag}")
             pipelineLogger("Successfully tagged commit ${env.gitCommitHash} as '${tag}'")
         }
         else {
