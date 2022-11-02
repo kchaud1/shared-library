@@ -33,13 +33,7 @@ def calculateSemVerTag(config) {
 	
     
         return imageTag
-      
-    }
-    catch (e)
-    {
-		pipelineLogger("Error while creating tag", "ERROR")
-        pipelineLogger.error("Caught Exception, printing Stack Trace: ${e}")
-    }
+     
       
 }
 
