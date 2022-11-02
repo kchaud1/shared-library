@@ -18,23 +18,6 @@ def getPipelineParameters(Map config, Map additionalParams=[:]) {
         ]
     ]
 
-    /*if ( env.pipelineType == "deploy" ) {
-        defaultParametersMap.put(
-            "INVOCATION_COMMAND", [
-                "defaultValue" : "install",
-                "description" : "The command passed to invocation image"
-            ]
-        )
-        defaultParametersMap.put(
-            "Last Successfully Deployed Tag", [
-                "defaultValue" : "", 
-                "description" : "The command passed to invocation image"
-            ]
-        )
-        
-
-    }*/
-
     pipelineLogger.debug("Creating Parameters for build job.  Note if parameters have been modified (added/removed/default value changed), they will be available in the next build.")
     def paramNameList = []
     def paramList = []
@@ -96,11 +79,7 @@ def getPipelineParameters(Map config, Map additionalParams=[:]) {
         pipelineLogger.debug("Adding parameter: name:'${paramName}', defaultValue:'${paramDefaultValue}', description:'${paramDescription}'")
 
     }
-      /*  "UPSTREAM_IMAGE_TAG" : [
-            "defaultValue" : "latest",
-            "description" : "The docker image tag (version) for the upstream image"
-        ],
-    */
+     
 
     assert paramList.size() > 0 : "FATAL: No pipeline parameters have been defined, including defaults.  This will cause pipeline to enter failed state.  Pipeline will terminate now."
     return paramList
@@ -122,25 +101,9 @@ def setFolderProperties(Map config)
         }
     }
 }
-   /**
-    * Read the properties file from repository into a map
-    *
-    * @param filePath - location of properties file, relative to root of repo.  Generally set to '.env'
-    * @return config - map of properties read in from .env
-    *    
-    */
-def getConfigMap(String filePath) {
-    pipelineLogger("Reading properties file from '${filePath}'")
-    def config = readProperties interpolate: true, file: filePath;
-    return config
-}
-   /**
-    * Check if pipelineLogLevel is defined in properties, use that custom value if defined.
-    * Default level is info and will be used otherwise
-    *    
-    * @param config - map of properties read in from .env
-    *
-    */
+
+
+  
 def setPipelineLogLevel(Map config){
 
     def logLevel=null
@@ -156,14 +119,7 @@ def setPipelineLogLevel(Map config){
 
     pipelineLogger.setLogLevel(logLevel)
 }
-   /**
-    * Calculate the type of pipeline that should be run.
-    *  Options are "workflow" or "deploy" (compile is an optional step in "workflow")
-    *  If pipelineType is defined as "deploy" in .env, that value will be used.  If not, 
-    *  the value will be calculated based on the job name (which should be based on repo name) 
-    *    
-    * @param config - map of properties read in from .env
-    */
+  
 def calculateAndSetPipelineTypeEnvVar(Map config) {
     def final PIPELINE_TYPES=[ "compile", "deploy"]
     def final DEPLOY_TYPE_PIPELINE_REGEX = ~/.*((\/(deploy|config)-)|(-(deploy|config)\/)).*/
@@ -233,25 +189,13 @@ def call(boolean customParam = false, Map externalConfig = [:]) {
     pipelineLogger.info("Running Setup")
     utilGit.setEnvVarsFromGitProperties()
     def config = findAndReadConfig(externalConfig)
-    //def globalVar = readYaml text: libraryResource('globalvars.yml')
-  	setFolderProperties(config)
-    //Setting up env based on LOB : future implementation
-    //utilities.setLOBBaseEnv(config, globalVar)
-   // def customPipelineScriptLocation = utilities.getCustomPipelineScriptLocation()
-    //if ( customPipelineScriptLocation != "" ) {
-      //  pipelineLogger.info("Custom pipeline script found at ${customPipelineScriptLocation}")
-        //config.put("pipelineType","custom")
-        //config.put("customPipelineScriptLocation",customPipelineScriptLocation)
-    //}
-
+    setFolderProperties(config)
     assert ! config.isEmpty():"ERROR: No .env file(s) or custom Pipeline scripts detected"
 
     setPipelineLogLevel(config)
     calculateAndSetPipelineTypeEnvVar(config)
     setProductionBranchEnvVar(config)
    
-    //added condition for pipeline setup , by default true
-    //String customRegistry=config["customRegistry"]
     String customRegistry = (config['customRegistry'] == null) ? "${customParam}":config['customRegistry']
     if (customRegistry == null || customRegistry.toBoolean() )
     {
