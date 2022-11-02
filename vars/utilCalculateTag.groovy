@@ -65,7 +65,7 @@ def call(Map config) {
     def final TAGGING_STRATEGY_WORKFLOW="semVer"
     def final TAGGING_STRATEGY_DEPLOY="commitHash"
     def final INCLUDE_UPSTREAM_TAG_STRING="includeUpstreamTagInTag"
-    def final TAGGING_STRATEGIES = ["semVer", "commitHash", "buildNumber", "static","dateTimeStamp"]
+    def final TAGGING_STRATEGIES = ["semVer", "commitHash", "buildNumber"]
 
     def taggingStrategy = ""
     def includeUpstreamTag = ""
@@ -76,15 +76,6 @@ def call(Map config) {
   {
         taggingStrategy = overrideTaggingStrategy
     	includeUpstreamTag=false
-    // Hot Fix 662022 : due to default null values being updated at else statement the LAtest tag started to poped up in image, Commenting
-    // below conditions as to keep includeUpstreamTag as false in case overrideTaggingStrategy is defined at .env 
-    // this is make sure to have everything work till user override. if you are looking to make it true , please use switch case below per condition. 
-        //if ( taggingStrategy == "semVer") {
-        //    includeUpstreamTag=false
-        //}
-        //else {
-         //   includeUpstreamTag=true
-       // }
     }
 
     else{
@@ -108,7 +99,7 @@ def call(Map config) {
     
 
 
-    def overrideIncludeUpstreamTag = config[INCLUDE_UPSTREAM_TAG_STRING]
+    /*def overrideIncludeUpstreamTag = config[INCLUDE_UPSTREAM_TAG_STRING]
     //pipelineLogger.debug("overrideIncludeUpstreamTag='${overrideIncludeUpstreamTag}'")
     if ( overrideIncludeUpstreamTag != null ) {
         if ( overrideIncludeUpstreamTag == "true" ) {
@@ -117,7 +108,7 @@ def call(Map config) {
         else if ( overrideIncludeUpstreamTag == "false" ) {
             includeUpstreamTag = false
         }
-    }
+    }*/
 
     assert TAGGING_STRATEGIES.contains(taggingStrategy) :"ERROR: Did not find tagging strategy '${taggingStrategy}' in ${TAGGING_STRATEGIES}"
 
@@ -135,20 +126,13 @@ def call(Map config) {
         case "buildNumber":
             tag = calculateBuildNumberTag(config)
         break
-        case "latestOnly":
-            tag = ""
-            includeUpstreamTag=false
-        break
-        case "dateTimeStamp":
-            Date date = new Date()
-            tag=getRelease(config)+"-v" + date.format("MMddyyyy") 
-        break            
+           
     }
-    assert (tag != "" || taggingStrategy == "latestOnly") : "ERROR: tag has been calculated as ''"
+    //assert (tag != "" || taggingStrategy == "latestOnly") : "ERROR: tag has been calculated as ''"
 
-    if (includeUpstreamTag == true) {
-        tag = "${params.UPSTREAM_IMAGE_TAG}-${tag}"
-    }
+    //if (includeUpstreamTag == true) {
+      //  tag = "${params.UPSTREAM_IMAGE_TAG}-${tag}"
+    //}
     env.tag = tag
     config.put("tag", tag)
     pipelineLogger("Tag calculated to be ${env.tag}")
