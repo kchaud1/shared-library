@@ -183,7 +183,11 @@ def findAndReadConfig(Map externalConfig = [:]) {
     return config
 }
 
-
+def getConfigMap(String filePath) {
+    pipelineLogger("Reading properties file from '${filePath}'")
+    def config = readProperties interpolate: true, file: filePath;
+    return config
+}
 
 def call(boolean customParam = false, Map externalConfig = [:]) {
     pipelineLogger.info("Running Setup")
