@@ -54,7 +54,6 @@ def dockerPushEcr(Map config, List serviceNames,String role) {
     }
 def getDockerPushUrl(Map config) {
     String dockerPushRegistryLocation= (config["dockerPushRegistryLocation"]==null) ? "ampf" : config["dockerPushRegistryLocation"]  
-    //utilities.checkConfigVarExistsNotEmpty(config,"dockerPushRegistryLocation")
     String dockerPushUrl=""
     switch (dockerPushRegistryLocation){
         case "aws":
@@ -79,4 +78,9 @@ def getDockerPushUrlEcr(Map config) {
 
 def dockerPushOnPrem(Map config, List serviceNames){
     pipelinelogger.debug("Code required for on prem deployment")
+}
+def getDockerPushUrlOnPrem(Map config) {
+    def pushRegistryUrl = (config['releaseBranch'] == env.gitBranchName) ? "${env.dockerReleaseRegistryUrl}":"${env.dockerDevRegistryUrl}"
+    pipelineLogger.info(" getDockerPushUrlOnPrem = ${pushRegistryUrl}")
+    return pushRegistryUrl
 }
