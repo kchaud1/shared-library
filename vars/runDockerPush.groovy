@@ -22,12 +22,7 @@ def dockerPushEcr(Map config, List serviceNames,String role) {
     utilities.checkAwsVars(config)
     String pushRegistryUrl
     String credSetName
-    //(pushRegistryUrl, credSetName) = getRegistryProperties(config)
-    //def imageNameToTagList = generateImageNameToTagList(config, serviceNames)
     
-    //['brc/dpe-bloomreachexperience/develop/cms':['akjllsdfjc9i3j2mx','latest']]
-    //def filteredImageNameToTagListMap = validateEcr(config, imageNameToTagList)
-    //List serviceNamesToPush=validateEcr(config, serviceNames,role)----------------------------
     List imagesToPush=[]
   
     def awsAccountNumber=config["awsAccountNumber"]
@@ -80,4 +75,8 @@ def getDockerPushUrlEcr(Map config) {
     def awsRegion=config["awsRegion"]
     def pushRegistryUrl = "${awsAccountNumber}.dkr.ecr.${awsRegion}.amazonaws.com"
     return pushRegistryUrl
+}
+
+def dockerPushOnPrem(Map config, List serviceNames){
+    pipelinelogger.debug("Code required for on prem deployment")
 }
