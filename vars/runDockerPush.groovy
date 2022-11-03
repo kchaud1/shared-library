@@ -34,6 +34,7 @@ def dockerPushEcr(Map config, List serviceNames,String role) {
     def awsAccountNumber=config["awsAccountNumber"]
     def awsRegion=config["awsRegion"]
     def awsUser=config["awsUser"]
+    pushRegistryUrl = getDockerPushUrlEcr(config)
     String dockerPushRegistryLocation=(config["dockerPushRegistryLocation"]==null) ? "hdfc" : config["dockerPushRegistryLocation"]  
     pipelineLogger.debug("AAAaaaaaaaaaaffffffffffffffff")
           
