@@ -29,7 +29,10 @@ def dockerPushEcr(Map config, List serviceNames,String role) {
     def awsRegion=config["awsRegion"]
     def awsUser=config["awsUser"]
     String dockerPushRegistryLocation=(config["dockerPushRegistryLocation"]==null) ? "hdfc" : config["dockerPushRegistryLocation"]  
+    pipelineLogger.debug("AAAaaaaaaaaaaffffffffffffffff")
       for ( serviceName in serviceNames) {
+          pipelineLogger.debug("bbbbbbbbafarsfstdbdcjkdbkbkcbdkvknvljkgnkjnvlnlndcvlnln")
+
       pushRegistryUrl = getDockerPushUrlEcr(config)
       sh(script:""" aws ecr get-login-password --region ${awsRegion} | docker login --username AWS --password-stdin ${awsAccountNumber}.dkr.ecr.${awsRegion}.amazonaws.com""", returnStdout: true)
       def checkRepositoryExists= sh script: "aws ecr describe-repositories --repository-names ${imageName} > /dev/null 2>&1 || aws ecr create-repository --repository-name ${imageName} > /dev/null 2>&1", returnStatus: true
