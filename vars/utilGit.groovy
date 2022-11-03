@@ -23,7 +23,7 @@ def setEnvVarsFromGitProperties() {
     //*********env.gitProjectName = gitUrl.split("github.com/")[1].split("/")[0].toLowerCase()************
     
     env.gitRepoName = gitUrl.tokenize('/').last().split("\\.")[0]
-	env.gitProjectName = "hdfc"
+	env.gitProjectName = "emvs"
     env.gitBranchName = env.BRANCH_NAME.split("/").last()
     if (isUnix()){
         env.gitCommitHash = sh (script: "git log -n 1 --pretty=format:'%H'", returnStdout: true)
