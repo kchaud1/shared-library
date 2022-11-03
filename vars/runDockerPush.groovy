@@ -26,7 +26,7 @@ def dockerPushEcr(Map config, List serviceNames,String role) {
     String credSetName
     
     List imagesToPush=[]
-    String imageName=utilities.generateDockerImageName(serviceNames, config)
+    //String imageName=utilities.generateDockerImageName(serviceNames, config)
     def awsAccountNumber=config["awsAccountNumber"]
     def awsRegion=config["awsRegion"]
     def awsUser=config["awsUser"]
