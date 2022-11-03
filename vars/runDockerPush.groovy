@@ -32,20 +32,12 @@ def dockerPushEcr(Map config, List serviceNames,String role) {
     def awsUser=config["awsUser"]
     String dockerPushRegistryLocation=(config["dockerPushRegistryLocation"]==null) ? "hdfc" : config["dockerPushRegistryLocation"]  
     pipelineLogger.debug("AAAaaaaaaaaaaffffffffffffffff")
-      for ( serviceName in serviceNames) {
-          pipelineLogger.debug("bbbbbbbbafarsfstdbdcjkdbkbkcbdkvknvljkgnkjnvlnlndcvlnln")
-
-      pushRegistryUrl = getDockerPushUrlEcr(config)
-      sh(script:""" aws ecr get-login-password --region ${awsRegion} | docker login --username AWS --password-stdin ${awsAccountNumber}.dkr.ecr.${awsRegion}.amazonaws.com""", returnStdout: true)
-      def checkRepositoryExists= sh script: "aws ecr describe-repositories --repository-names ${imageName} > /dev/null 2>&1 || aws ecr create-repository --repository-name ${imageName} > /dev/null 2>&1", returnStatus: true
-          assert checkRepositoryExists == 0 :"ERROR: Error response while checking/creating repository in ECR.  Repository name ='${imageName}', using credentials id '${awsUser}'\nLikely issues are: \n-Invalid repository name\n-Invalid credentials/incorrect permissions associated with credentials.  Requires full permissions for ECR in order to run."
-          def imageAlreadyExists = sh script: "aws ecr describe-images --repository-name ${imageName} --image-ids imageTag=${env.tag} > /dev/null 2>&1", returnStatus: true
-          pipelineLogger.debug("imageAlreadyExists set to ${imageAlreadyExists}")
           
       docker.withRegistry("https://${pushRegistryUrl}") {
       pushImages(config, serviceNames, pushRegistryUrl)
 
     }
+
 }
     def pushImages(config, serviceNames, pushRegistryUrl){
     def dockerImages=[]
