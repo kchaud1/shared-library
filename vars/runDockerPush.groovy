@@ -39,7 +39,7 @@ def dockerPushEcr(Map config, List serviceNames,String role) {
           if (imageAlreadyExists == 0) {
                 pipelineLogger.warn("Image ${imageName} with tag ${env.tag} already exists in ECR.  This tag will not be pushed again")
           }
-      }
+      }}
           else {
                 pipelineLogger.debug("Image ${imageName}:${env.tag} was not found in ecr, so it can be pushed.")
                 imagesToPush.add(serviceName)
