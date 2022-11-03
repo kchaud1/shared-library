@@ -237,24 +237,3 @@ def getDockerRegistry(String releaseBranch){
     pipelineLogger.debug("Docker Build registry is set as ${dockerRegistry}")
     return dockerRegistry
 }
-def generateDockerImageName(String serviceName, Map config = [:]) {
-
-    def dockerPushRegistryUrl=runDockerPush.getDockerPushUrl(config)
-    def imagePath=generateDockerImagePath(config)
-    def imageName=getServiceName(serviceName, config)
-    //QuickFIx for ECR images, this is causing duplicate name 07162021
-    //def dockerImageName="${dockerPushRegistryUrl}/${imagePath}/${imageName}".toLowerCase()
-    def dockerImageName="${imagePath}/${imageName}".toLowerCase()
-
-    withFolderProperties{
-		if ( env.baseImage ) {
-            parseMapForKeyList([serviceName],config).each{ service, image ->
-                dockerImageName = image['imageName'].toLowerCase()
-            }
-        }
-    }
-
-    pipelineLogger.debug("dockerImageName = ${dockerImageName}")
-    return dockerImageName
-}
-
