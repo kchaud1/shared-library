@@ -42,7 +42,7 @@ def dockerPushEcr(Map config, List serviceNames,String role) {
     def pushImages(config, serviceNames, pushRegistryUrl){
     def dockerImages=[]
     for (serviceName in serviceNames) {
-        String imageName=utilities.generateDockerImageName(serviceName, config)
+        String imageName=utilities.generateDockerImageName(serviceNames, config)
         String imageNameWithTag="${imageName}:${env.tag}"
                     
         pipelineLogger.debug("Pushing image '${pushRegistryUrl}/${imageNameWithTag}'.")
