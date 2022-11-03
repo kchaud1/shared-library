@@ -36,14 +36,7 @@ def dockerPushEcr(Map config, List serviceNames,String role) {
           assert checkRepositoryExists == 0 :"ERROR: Error response while checking/creating repository in ECR.  Repository name ='${imageName}', using credentials id '${awsUser}'\nLikely issues are: \n-Invalid repository name\n-Invalid credentials/incorrect permissions associated with credentials.  Requires full permissions for ECR in order to run."
           def imageAlreadyExists = sh script: "aws ecr describe-images --repository-name ${imageName} --image-ids imageTag=${env.tag} > /dev/null 2>&1", returnStatus: true
           pipelineLogger.debug("imageAlreadyExists set to ${imageAlreadyExists}")
-          if (imageAlreadyExists == 0) {
-                pipelineLogger.warn("Image ${imageName} with tag ${env.tag} already exists in ECR.  This tag will not be pushed again")
           }
-      }}
-          else {
-                pipelineLogger.debug("Image ${imageName}:${env.tag} was not found in ecr, so it can be pushed.")
-                imagesToPush.add(serviceName)
-          }}
       docker.withRegistry("https://${pushRegistryUrl}") {
       pushImages(config, serviceNames, pushRegistryUrl)
 
