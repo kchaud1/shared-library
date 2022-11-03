@@ -29,7 +29,7 @@ def dockerPushEcr(Map config, List serviceNames,String role) {
     def awsRegion=config["awsRegion"]
     def awsUser=config["awsUser"]
     String dockerPushRegistryLocation=(config["dockerPushRegistryLocation"]==null) ? "hdfc" : config["dockerPushRegistryLocation"]  
-   
+      for ( serviceName in serviceNames) {
       pushRegistryUrl = getDockerPushUrlEcr(config)
       sh(script:""" aws ecr get-login-password --region ${awsRegion} | docker login --username AWS --password-stdin ${awsAccountNumber}.dkr.ecr.${awsRegion}.amazonaws.com""", returnStdout: true)
       def checkRepositoryExists= sh script: "aws ecr describe-repositories --repository-names ${imageName} > /dev/null 2>&1 || aws ecr create-repository --repository-name ${imageName} > /dev/null 2>&1", returnStatus: true
@@ -42,7 +42,7 @@ def dockerPushEcr(Map config, List serviceNames,String role) {
           else {
                 pipelineLogger.debug("Image ${imageName}:${env.tag} was not found in ecr, so it can be pushed.")
                 imagesToPush.add(serviceName)
-          }
+          }}
       docker.withRegistry("https://${pushRegistryUrl}") {
       pushImages(config, serviceNames, pushRegistryUrl)
 
