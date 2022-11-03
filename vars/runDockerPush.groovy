@@ -7,7 +7,9 @@ def call(Map config, List serviceNames=[], String role=null) {
     switch (dockerPushRegistryLocation){
         case "aws":
             pipelineLogger.info("Found dockerPushRegistryLocation as 'aws'")
+        pipelineLogger.debug("mkkkikiiikimmmmmm")
             dockerPushEcr(config, serviceNames,role)
+        pipelineLogger.debug("hhhhyyyyuutrutuuuuu")
             break
         case "hdfc":
             pipelineLogger.info("Found dockerPushRegistryLocation as 'hdfc'")
