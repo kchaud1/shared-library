@@ -1,5 +1,9 @@
 def call(Map config, List serviceNames=[], String role=null) {
+            pipelineLogger.debug("Hi KARAN")
+
     if (serviceNames.isEmpty()){serviceNames=utilities.generateServiceNamesListFromConfigMap(config)}
+            pipelineLogger.debug("IAM IN DOCJER PUSH")
+
 
     String dockerPushRegistryLocation= (config["dockerPushRegistryLocation"]==null) ? "hdfc" : config["dockerPushRegistryLocation"] 
 
