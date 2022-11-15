@@ -193,7 +193,7 @@ def call(boolean customParam = false, Map externalConfig = [:]) {
     pipelineLogger.info("Running Setup")
     utilGit.setEnvVarsFromGitProperties()
     def config = findAndReadConfig(externalConfig)
-    setFolderProperties(config)
+    //setFolderProperties(config)
     assert ! config.isEmpty():"ERROR: No .env file(s) or custom Pipeline scripts detected"
 
     setPipelineLogLevel(config)
